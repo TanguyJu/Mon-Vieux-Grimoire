@@ -6,13 +6,17 @@ exports.createBook = (req, res, next) => {
   try {
     const bookObject = JSON.parse(req.body.book);
     const imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+    const hasRating = Array.isArray(bookObject.ratings) && bookObject.ratings.length > 0;
 
     const book = new Book({
       ...bookObject,
       imageUrl: imageUrl,
       userId: req.auth.userId,
-      ratings: [],
-      averageRating: 0
+      ratings: hasRating ? bookObject.ratings : [{
+        userId: req.auth.userId,
+        grade: 0
+      }],
+      averageRating: hasRating ? bookObject.averageRating : 0
     });
 
     book.save()

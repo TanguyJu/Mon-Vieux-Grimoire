@@ -1,6 +1,15 @@
 const mongoose = require('mongoose');
 const app = require('./app');
-require('dotenv').config();
+const fs = require('fs');
+const dotenv = require('dotenv');
+
+if (fs.existsSync('.env.local')) {
+  dotenv.config({ path: '.env.local' });
+  console.log('Chargement des variables depuis .env.local');
+} else {
+  dotenv.config();
+  console.log('Chargement des variables depuis .env');
+};
 
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
